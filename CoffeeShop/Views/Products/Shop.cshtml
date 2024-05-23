@@ -1,18 +1,12 @@
-﻿@model IEnumerable<CoffeeShop.Models.Product>
+﻿@model IEnumerable<Product>
 
-<DOCTYPE html>
-    <html>
-       <head>
-           <title>Coffee Shop</title>
-       </head>
-       <body>
-           <hi>Shop</hi>
-           @foreach (var item in Model)
+
+
+             <hi>Shop</hi>
+             @foreach (var item in Model)
         {  
             <img height="100" width="100" src="@item.ImageUrl" />
-            <h3>@item.Name</h3>
+            <a asp-controller = "Products" asp-action = "Detail" asp-route-id="@item.Id"><h3>@item.Name</h3></a>
             <p>@item.Price.ToString("c")</p>
         }  
-       </body>
-    </html>
-</DOCTYPE>
+
