@@ -1,4 +1,5 @@
 using CoffeeShop.Data;
+using CoffeeShop.Models;
 using CoffeeShop.Models.Interfaces;
 using CoffeeShop.Models.Services;
 using Microsoft.EntityFrameworkCore;
@@ -9,10 +10,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddControllersWithViews();
 builder.Services.AddScoped<IProductRepository, ProductRespository>();
 
+builder.Services.AddScoped<IShoppingCartRepository, ShoppingCartRepository>(ShoppingCartRepository.GetCart);
+
+
 builder.Services.AddDbContext<CoffeeShopDBContext>(option => option.UseSqlServer(builder.Configuration.
 GetConnectionString("CoffeeShopDBContextConnection")));
+builder.Services.AddSession();
+builder.Services.AddHttpContextAccessor();
 
 var app = builder.Build();
+app.UseSession();
 
 // Configure the HTTP request pipeline.
 if (!app.Environment.IsDevelopment())

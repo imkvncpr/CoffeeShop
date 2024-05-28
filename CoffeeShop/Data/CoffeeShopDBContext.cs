@@ -10,6 +10,7 @@ namespace CoffeeShop.Data
         {
         }
         public DbSet<Product> Products { get; set; }
+        public DbSet<ShoppingCart> ShoppingCart { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
