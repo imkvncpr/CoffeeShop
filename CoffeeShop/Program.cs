@@ -3,6 +3,7 @@ using CoffeeShop.Models;
 using CoffeeShop.Models.Interfaces;
 using CoffeeShop.Models.Services;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
@@ -17,8 +18,11 @@ builder.Services.AddScoped<IOrderRespository, OrderRepository
 
 builder.Services.AddDbContext<CoffeeShopDBContext>(option => option.UseSqlServer(builder.Configuration.
 GetConnectionString("CoffeeShopDBContextConnection")));
+
+builder.Services.AddDefaultIdentity<IdentityUser>(options => options.SignIn.RequireConfirmedAccount = false).AddEntityFrameworkStores<CoffeeShopDBContext>();
 builder.Services.AddSession();
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddRazorPages();
 
 var app = builder.Build();
 app.UseSession();
@@ -33,9 +37,10 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+app.MapRazorPages();
 
 app.UseRouting();
-
+app.UseAuthentication();
 app.UseAuthorization();
 
 app.MapControllerRoute(
