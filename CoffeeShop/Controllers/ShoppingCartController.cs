@@ -15,7 +15,7 @@ namespace CoffeeShop.Controllers
         {
             var items = ShoppingCartRepository.GetShoppingCart();
             ShoppingCartRepository.ShoppingCart = items;
-            ViewBag.CartTotal = ShoppingCartRepository.GetShoppingCartTotal();           
+            ViewBag.CartTotal = ShoppingCartRepository.GetShoppingCartTotal();
             return View(items);
         }
 
@@ -36,9 +36,6 @@ namespace CoffeeShop.Controllers
             var product = productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
             if (product != null)
             {
-                ShoppingCartRepository.RemoveFromCart(product);
-                int cartCount = ShoppingCartRepository.GetShoppingCart().Count;
-                HttpContext.Session.SetInt32("CartCount", cartCount);
             }
             return RedirectToAction("index");
         }
