@@ -5,30 +5,30 @@ namespace CoffeeShop.Controllers
 {
     public class ShoppingCartController : Controller
     {
-        private readonly IShoppingCartRepository _shoppingCartRepository;
-        private readonly IProductRepository _productRepository;
+        private readonly IShoppingCartRepository shoppingCartRepository;
+        private readonly IProductRepository productRepository;
 
         public ShoppingCartController(IShoppingCartRepository shoppingCartRepository, IProductRepository productRepository)
         {
-            _shoppingCartRepository = shoppingCartRepository;
-            _productRepository = productRepository;
+            this.shoppingCartRepository = shoppingCartRepository;
+            this.productRepository = productRepository;
         }
 
         public IActionResult Index()
         {
-            var items = _shoppingCartRepository.GetShoppingCart();
-            _shoppingCartRepository.ShoppingCart = items;
-            ViewBag.CartTotal = _shoppingCartRepository.GetShoppingCartTotal();
+            var items = shoppingCartRepository.GetShoppingCart();
+            shoppingCartRepository.ShoppingCart = items;
+            ViewBag.CartTotal = shoppingCartRepository.GetShoppingCartTotal();
             return View(items);
         }
 
         public RedirectToActionResult AddToShoppingCart(int pId)
         {
-            var product = _productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
+            var product = productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
             if (product != null)
             {
-                _shoppingCartRepository.AddToCart(product);
-                int cartCount = _shoppingCartRepository.GetShoppingCart().Count;
+                shoppingCartRepository.AddToCart(product);
+                int cartCount = shoppingCartRepository.GetShoppingCart().Count;
                 HttpContext.Session.SetInt32("CartCount", cartCount);
             }
             return RedirectToAction("Index");
@@ -36,11 +36,11 @@ namespace CoffeeShop.Controllers
 
         public RedirectToActionResult RemoveFromShoppingCart(int pId)
         {
-            var product = _productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
+            var product = productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
             if (product != null)
             {
-                _shoppingCartRepository.RemoveFromCart(product);
-                int cartCount = _shoppingCartRepository.GetShoppingCart().Count;
+                shoppingCartRepository.RemoveFromCart(product);
+                int cartCount = shoppingCartRepository.GetShoppingCart().Count;
                 HttpContext.Session.SetInt32("CartCount", cartCount);
             }
             return RedirectToAction("Index");
