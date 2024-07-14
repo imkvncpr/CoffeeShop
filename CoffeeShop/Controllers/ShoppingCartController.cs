@@ -5,39 +5,45 @@ namespace CoffeeShop.Controllers
 {
     public class ShoppingCartController : Controller
     {
-        private IShoppingCartRepository ShoppingCartRepository;
-        private IProductRepository productRepository;
-        public ShoppingCartController(IShoppingCartRepository shoppingCartRepository)
+        private readonly IShoppingCartRepository _shoppingCartRepository;
+        private readonly IProductRepository _productRepository;
+
+        public ShoppingCartController(IShoppingCartRepository shoppingCartRepository, IProductRepository productRepository)
         {
-            this.ShoppingCartRepository = shoppingCartRepository;
+            _shoppingCartRepository = shoppingCartRepository;
+            _productRepository = productRepository;
         }
+
         public IActionResult Index()
         {
-            var items = ShoppingCartRepository.GetShoppingCart();
-            ShoppingCartRepository.ShoppingCart = items;
-            ViewBag.CartTotal = ShoppingCartRepository.GetShoppingCartTotal();
+            var items = _shoppingCartRepository.GetShoppingCart();
+            _shoppingCartRepository.ShoppingCart = items;
+            ViewBag.CartTotal = _shoppingCartRepository.GetShoppingCartTotal();
             return View(items);
         }
 
         public RedirectToActionResult AddToShoppingCart(int pId)
         {
-            var product = productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
+            var product = _productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
             if (product != null)
             {
-                ShoppingCartRepository.AddToCart(product);
-                int cartCount = ShoppingCartRepository.GetShoppingCart().Count;
+                _shoppingCartRepository.AddToCart(product);
+                int cartCount = _shoppingCartRepository.GetShoppingCart().Count;
                 HttpContext.Session.SetInt32("CartCount", cartCount);
             }
-            return RedirectToAction("index");
+            return RedirectToAction("Index");
         }
 
         public RedirectToActionResult RemoveFromShoppingCart(int pId)
         {
-            var product = productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
+            var product = _productRepository.GetAllProducts().FirstOrDefault(p => p.Id == pId);
             if (product != null)
             {
+                _shoppingCartRepository.RemoveFromCart(product);
+                int cartCount = _shoppingCartRepository.GetShoppingCart().Count;
+                HttpContext.Session.SetInt32("CartCount", cartCount);
             }
-            return RedirectToAction("index");
+            return RedirectToAction("Index");
         }
     }
 }
